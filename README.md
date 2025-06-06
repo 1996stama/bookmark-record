@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/5598fc3a-1053-4b18-991c-67e68bd9ae25" />
 
-## Getting Started
+# ブックマークレコード
 
-First, run the development server:
+## 概要
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+このプロジェクトでは、トピック別にブックマーク（URL）を管理するアプリを構築します。  
+トピックを作成し、そのトピックに関連する URL ブックマークを追加することで、情報を整理して保存・表示します。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 学習目標
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+今回のテーマは、Prisma を使用したデータベース操作について、学習します。
+スキーマ設計、マイグレーション、リレーション（1 対多）の実装方法をはじめ、Next.js のフルスタック開発について、確認してください。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 推奨技術
 
-## Learn More
+このプロジェクトの難易度と趣旨を踏まえて、以下の使用をお勧めします。
 
-To learn more about Next.js, take a look at the following resources:
+- Prisma を用いたデータベース操作
+- SQLite を用いたローカルデータベース
+- Next.js を用いたフルスタック環境構築
+- TypeScript による型チェック
+- Tailwind CSS を用いたスタイリング
+- Shadcn UI を用いたコンポーネントライブラリ
+- API Routes を用いたバックエンド実装
+- Prisma Studio を用いたデータベース管理方法
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 お題
 
-## Deploy on Vercel
+- 「ユーザーストーリー」を全て満たすアプリを構築してください。
+- 必要に応じて、スクリーンショットやデモサイトの URL を参照してください。
+- スタイルは、あなた自身で独自にカスタマイズすることが可能です。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 必須機能
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **トピック管理**：
+   - 学習トピックを追加・編集・削除し、表示する。
+2. **ブックマーク管理**：
+   - URL、説明を記録・編集・削除する。
+3. **トピック別表示**：
+   - 選択したトピックに関連するブックマークを一覧表示する。
+
+## ユーザーストーリー
+
+- [ ] ユーザーがサイトにアクセスすると、トピック一覧が表示されている。
+- [ ] 新しいトピックを作成する際は、絵文字・タイトル・説明を入力できる。
+- [ ] 作成したトピックが一覧に表示される。
+- [ ] トピックを編集・削除できる。
+- [ ] 特定のトピックを選択すると、そのトピックに関連するブックマークが一覧表示される。
+- [ ] ユーザーがブックマークを追加する際は、関連するトピックをドロップダウンリストから選択できる。
+- [ ] URL・説明を入力できる。
+- [ ] 必要な情報を入力し、「**_保存_**」ボタンをクリックすると、ブックマークが一覧に追加される。
+- [ ] ブックマークを編集・削除できる。
+- [ ] Prisma Studio でデータベースの内容を確認・操作できる。
