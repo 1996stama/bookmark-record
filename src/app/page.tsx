@@ -1,122 +1,45 @@
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { prisma } from "@/lib/prisma";
+import { BookmarkManagerClient } from "@/components/bookmark-manager-client";
+import { TopicWithBookmarkCount } from "@/hooks/use-topics";
 
-export default function Home() {
-  return (
-    <TooltipProvider>
-      <div className="p-8 space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>shadcn/ui Components Test</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Button>Button</Button>
-              <Badge>Badge</Badge>
-            </div>
-            <Input placeholder="Input" />
-            <Textarea placeholder="Textarea" />
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="test">Test</SelectItem>
-              </SelectContent>
-            </Select>
-            <Separator />
-            <Skeleton className="h-4 w-20" />
-            <div className="flex gap-2">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline">Alert Dialog</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Test</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Test alert dialog
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>OK</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Dialog</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Test Dialog</DialogTitle>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline">Sheet</Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Test Sheet</SheetTitle>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline">Tooltip</Button>
-                </TooltipTrigger>
-                <TooltipContent>Test tooltip</TooltipContent>
-              </Tooltip>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </TooltipProvider>
-  );
+/**
+ * 初期表示用のトピック一覧を取得する
+ *
+ * ブックマーク数を含むトピック情報を、更新日時の降順で取得します。
+ * サーバーサイドでデータを取得することで、初期表示の高速化を図っています。
+ */
+async function getInitialTopics(): Promise<TopicWithBookmarkCount[]> {
+  try {
+    const topics = await prisma.topic.findMany({
+      include: {
+        _count: {
+          select: { bookmarks: true },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+
+    // Prismaの_countをbookmarkCountプロパティに変換
+    return topics.map((topic) => ({
+      ...topic,
+      bookmarkCount: topic._count.bookmarks,
+    }));
+  } catch (error) {
+    console.error("Error fetching initial topics:", error);
+    // エラー時は空配列を返してアプリケーションの継続を保証
+    return [];
+  }
+}
+
+/**
+ * ブックマーク管理ページのメインコンポーネント
+ *
+ * サーバーサイドでトピック一覧を取得し、クライアントコンポーネントに渡します。
+ */
+export default async function BookmarkManagerPage() {
+  const initialTopics = await getInitialTopics();
+
+  return <BookmarkManagerClient initialTopics={initialTopics} />;
 }
